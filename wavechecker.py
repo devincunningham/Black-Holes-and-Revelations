@@ -2,30 +2,26 @@ import aplpy
 from astropy import units as u, utils
 from astropy.coordinates import SkyCoord
 from astropy.io import fits
-from astropy.table import Table
-from astropy.wcs import WCS
 from matplotlib import gridspec as gridspec, lines as mlines, pyplot as plt
-import numpy as np
-import pandas as pd
 import pyvo as vo
 
-def waveseeker(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icrs',scs_radius = .025):
-    
-    myLocation = SkyCoord(RA*u.deg, DEC*u.deg, frame = frame)
+
+def waveseeker(RA=192.491112052, DEC=5.311410068, framesize=4*u.arcmin, frame='icrs', scs_radius=.025):
+    myLocation = SkyCoord(RA*u.deg, DEC*u.deg, frame=frame)
     scs_radio_query = vo.dal.SCSQuery('https://heasarc.gsfc.nasa.gov/cgi-bin/vo/cone/coneGet.pl?table=nvss&',
                                       pos=(myLocation.ra.deg, myLocation.dec.deg),
                                       radius=scs_radius)
     scs_radio_results = scs_radio_query.execute()
     scs_radio_results_pd = scs_radio_results.votable.to_table().to_pandas()
     scs_radio_results_pd.columns = scs_radio_results.fieldnames
-    
+
     scs_optical_query = vo.dal.SCSQuery('http://wfaudata.roe.ac.uk/sdssdr8-dsa/DirectCone?DSACAT=SDSS_DR8&DSATAB=PhotoObjAll&',
                                         pos=(myLocation.ra.deg, myLocation.dec.deg),
                                         radius=scs_radius)
     scs_optical_results = scs_optical_query.execute()
     scs_optical_results_pd = scs_optical_results.votable.to_table().to_pandas()
     scs_optical_results_pd.columns = scs_optical_results.fieldnames
-    
+
     scs_Xray_query = vo.dal.SCSQuery('http://cda.harvard.edu/cscvo/coneSearch?',
                                      pos=(myLocation.ra.deg, myLocation.dec.deg),
                                      radius=scs_radius)
@@ -35,14 +31,15 @@ def waveseeker(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icrs
 
     return [scs_radio_results_pd, scs_optical_results_pd, scs_Xray_results_pd]
 
-def waveplotter(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icrs',scs_radius=.025):
-    filename='largegalaxyexample'
+
+def waveplotter(RA=192.491112052, DEC=5.311410068, framesize=4*u.arcmin, frame='icrs', scs_radius=.025):
+    filename = 'largegalaxyexample'
     height_ratios = [8]
-    width_ratios = [8,8,8]
+    width_ratios = [8, 8, 8]
     wspace, hspace = 0, 0
-    
-    frame='icrs'
-    myLocation = SkyCoord(RA*u.deg, DEC*u.deg, frame = frame)
+
+    frame = 'icrs'
+    myLocation = SkyCoord(RA*u.deg, DEC*u.deg, frame=frame)
     sia_urls = ['https://skyview.gsfc.nasa.gov/cgi-bin/vo/sia.pl?survey=nvss&',
                 'https://skyview.gsfc.nasa.gov/cgi-bin/vo/sia.pl?survey=sdssdr7&',
                 'http://cda.harvard.edu/cscsiap/queryImages?']
@@ -53,14 +50,14 @@ def waveplotter(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icr
     for i, (sia_url, fitsname) in enumerate(zip(sia_urls, fitsnames)):
         # We first use pyVO's Simple Image Access to generate a query.
         sia_query = vo.sia.SIAQuery(sia_url,
-                                pos=(myLocation.ra.deg, myLocation.dec.deg),
-                                size = framesize, format='image/fits',
-                                intersect='covers')
+                                    pos=(myLocation.ra.deg, myLocation.dec.deg),
+                                    size=framesize, format='image/fits',
+                                    intersect='covers')
         # We execute this query.
         sia_results = sia_query.execute()
         print "Downloading {} Image...".format(fitsname)
         # We won't always be able to retrieve an image file. When this happens, our executed query returns
-        # an unindexable object. 
+        # an unindexable object.
         try:
             sia_url = sia_results[0].getdataurl()
             fitsimages['{}'.format(fitsname)] = fits.open(utils.data.download_file(sia_url, timeout=300, show_progress=False))
@@ -70,7 +67,7 @@ def waveplotter(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icr
             print "No image currently available for {} :( ".format(fitsname)
 
         wavedata = waveseeker(RA=RA, DEC=DEC,
-                              framesize=framesize,frame=frame,
+                              framesize=framesize, frame=frame,
                               scs_radius=scs_radius)
         scs_radio_results_pd = wavedata[0]
         scs_optical_results_pd = wavedata[1]
@@ -90,7 +87,7 @@ def waveplotter(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icr
                                fitsimages['Chandra']]):
 
         ax = fig.add_subplot(gs[i])
-        ax.set_title('{}'.format(names[i]),position=[.5, 1.05])
+        ax.set_title('{}'.format(names[i]), position=[.5, 1.05])
 
         # Because I'm just throwing aplpy over gridspec subplots, tick marks and tick labels
         # from the subplot axes will sit underneath the aplpy plots. So, let's remove them.
@@ -109,9 +106,9 @@ def waveplotter(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icr
         # We have already set empty image files to a zero value. Anything with a nonzero
         # file value will therefore contain an image. Let's plot those.
         if image != 0:
-            ax = aplpy.FITSFigure(image,figure=fig,
+            ax = aplpy.FITSFigure(image, figure=fig,
                                   subplot=list(gs[i].get_position(fig).bounds))
-            ax.recenter(myLocation.ra,myLocation.dec,radius=.025)
+            ax.recenter(myLocation.ra, myLocation.dec, radius=.025)
             ax.show_colorscale(cmap=cmap, stretch='linear', vmid=None)
             if i != 1:
                 try:
@@ -123,15 +120,15 @@ def waveplotter(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icr
             # Let's look at exactly where these observations are in our frame.
             ax.show_markers(myLocation.ra, myLocation.dec, s=1000, marker='+',
                             c='white', linewidth=2, alpha=.5)
-            for (ra, dec) in zip(scs_radio_results_pd.ra,scs_radio_results_pd.dec):
+            for (ra, dec) in zip(scs_radio_results_pd.ra, scs_radio_results_pd.dec):
                 ax.show_markers(ra, dec, s=300, marker='v',
                                 facecolor='none', edgecolor='orange', alpha=1,
                                 linewidth=2, zorder=20)
-            for (ra, dec) in zip(scs_optical_results_pd.ra,scs_optical_results_pd.dec):
+            for (ra, dec) in zip(scs_optical_results_pd.ra, scs_optical_results_pd.dec):
                 ax.show_markers(ra, dec, s=75, marker='o',
                                 facecolor='none', edgecolor='cornsilk', alpha=.75,
                                 linewidth=1, zorder=19)
-            for (ra, dec) in zip(scs_Xray_results_pd.ra,scs_Xray_results_pd.dec):
+            for (ra, dec) in zip(scs_Xray_results_pd.ra, scs_Xray_results_pd.dec):
                 ax.show_markers(ra, dec, s=300, marker='x',
                                 facecolor='deeppink', edgecolor='deeppink', alpha=1,
                                 linewidth=2, zorder=21)
@@ -144,7 +141,7 @@ def waveplotter(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icr
                              pad=0, axis_label_pad=10,
                              axis_label_text='[ {} ]'.format(units[i]))
             ax.colorbar.set_axis_label_font(style='italic')
-            ax.colorbar.set_font(style='italic',size='small')
+            ax.colorbar.set_font(style='italic', size='small')
 
             # A scalebar representing one arcminute.
             ax.add_scalebar(1*u.arcminute, '1 Arcminute', color='white')
@@ -167,13 +164,13 @@ def waveplotter(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icr
                                        mfc='none', mec='orange',
                                        markersize=10, label='VLA')
             SDSS_marker = mlines.Line2D([], [], marker='o', linestyle='None',
-                                        mfc='none',mec='yellow',
+                                        mfc='none', mec='yellow',
                                         markersize=10, label='SDSS')
             Chandra_marker = mlines.Line2D([], [], marker='x', linestyle='None',
                                            mfc='none', mec='deeppink',
                                            markersize=10, label='Chandra')
             plt.legend(bbox_to_anchor=(0, -4), loc=3,
-                       handles=[VLA_marker,SDSS_marker,Chandra_marker],
+                       handles=[VLA_marker, SDSS_marker, Chandra_marker],
                        facecolor='whitesmoke', edgecolor='whitesmoke',
                        framealpha=1).set_zorder(102)
 
@@ -181,10 +178,10 @@ def waveplotter(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icr
         # We have already set empty image files to a zero value. When this happens,
         # let's let our audience know that no image has been found. It's prettier this way!
         elif image == 0:
-            ax = plt.text(0.5, 0.5,'{} Image Not Found'.format(names[i]),
+            ax = plt.text(0.5, 0.5, '{} Image Not Found'.format(names[i]),
                           horizontalalignment='center',
                           verticalalignment='center',
-                          transform = ax.transAxes)
+                          transform=ax.transAxes)
     if filename is not None:
         plt.savefig('{}.png'.format(filename))
     plt.show()
