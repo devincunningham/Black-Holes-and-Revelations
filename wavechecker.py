@@ -29,7 +29,9 @@ def waveseeker(RA=192.491112052, DEC=5.311410068, framesize=4*u.arcmin, frame='i
     scs_Xray_results_pd = scs_Xray_results.votable.to_table().to_pandas()
     scs_Xray_results_pd.columns = scs_Xray_results.fieldnames
 
-    return [scs_radio_results_pd, scs_optical_results_pd, scs_Xray_results_pd]
+    return {'NVSS' : scs_radio_results_pd,
+            'SDSS' : scs_optical_results_pd,
+            'CSC' : scs_Xray_results_pd}
 
 
 def waveplotter(RA=192.491112052, DEC=5.311410068, framesize=4*u.arcmin, frame='icrs', scs_radius=.025):
@@ -66,16 +68,16 @@ def waveplotter(RA=192.491112052, DEC=5.311410068, framesize=4*u.arcmin, frame='
             fitsimages['{}'.format(fitsname)] = 0
             print "No image currently available for {} :( ".format(fitsname)
 
-        wavedata = waveseeker(RA=RA, DEC=DEC,
-                              framesize=framesize, frame=frame,
-                              scs_radius=scs_radius)
-        scs_radio_results_pd = wavedata[0]
-        scs_optical_results_pd = wavedata[1]
-        scs_Xray_results_pd = wavedata[2]
-
     cmap = 'bone'
     names = ['NRAO/VLA Sky Survey - 1.4 GHz', 'Sloan Digital Sky Survey', 'Chandra Source Catalog']
     units = ['Janskies', 'Photons ADU$^{-1}$', 'Photons cm$^{-2}$ s$^{-1}$']
+
+    wavedata = waveseeker(RA=RA, DEC=DEC,
+                          framesize=framesize, frame=frame,
+                          scs_radius=scs_radius)
+    scs_radio_results_pd = wavedata['NVSS']
+    scs_optical_results_pd = wavedata['SDSS']
+    scs_Xray_results_pd = wavedata['CSC']
 
     fig = plt.figure(figsize=(sum(width_ratios) + wspace * (len(width_ratios) - 1),
                               sum(height_ratios) + hspace * (len(height_ratios) - 1)))
