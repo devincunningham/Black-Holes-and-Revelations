@@ -1,8 +1,3 @@
-
-# coding: utf-8
-
-# In[1]:
-
 import aplpy
 from astropy import units as u, utils
 from astropy.coordinates import SkyCoord
@@ -13,25 +8,6 @@ from matplotlib import gridspec as gridspec, lines as mlines, pyplot as plt
 import numpy as np
 import pandas as pd
 import pyvo as vo
-
-
-# In[ ]:
-
-scs_optical_results_pd.RA_ICRS
-
-
-# In[ ]:
-
-for i in range(len(scs_optical_results_pd.columns)):
-    print i,":",scs_optical_results_pd.columns[i]
-
-
-# In[ ]:
-
-scs_radio_results_pd
-
-
-# In[2]:
 
 def waveseeker(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icrs',scs_radius = .025):
     
@@ -58,9 +34,6 @@ def waveseeker(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icrs
     scs_Xray_results_pd.columns = scs_Xray_results.fieldnames
 
     return [scs_radio_results_pd, scs_optical_results_pd, scs_Xray_results_pd]
-
-
-# In[3]:
 
 def waveplotter(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icrs',scs_radius=.025):
     filename='largegalaxyexample'
@@ -215,14 +188,3 @@ def waveplotter(RA=192.491112052,DEC=5.311410068,framesize=4*u.arcmin,frame='icr
     if filename is not None:
         plt.savefig('{}.png'.format(filename))
     plt.show()
-
-
-# In[4]:
-
-waveplotter()
-
-
-# In[ ]:
-
-
-
