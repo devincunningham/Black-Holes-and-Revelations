@@ -34,8 +34,8 @@ def waveseeker(RA=192.491112052, DEC=5.311410068, framesize=4*u.arcmin, frame='i
             'CSC' : scs_Xray_results_pd}
 
 
-def waveplotter(RA=192.491112052, DEC=5.311410068, framesize=4*u.arcmin, frame='icrs', scs_radius=.025):
-    filename = 'largegalaxyexample'
+def waveplotter(RA=192.491112052, DEC=5.311410068, framesize=4*u.arcmin, frame='icrs', scs_radius=.025, filename = None):
+    
     height_ratios = [8]
     width_ratios = [8, 8, 8]
     wspace, hspace = 0, 0
