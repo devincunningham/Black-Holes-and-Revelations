@@ -6,9 +6,7 @@ from matplotlib import gridspec as gridspec, lines as mlines, pyplot as plt
 import pyvo as vo
 
 
-def getdata(RA=192.491112052, DEC=5.311410068, frame='icrs',
-            NVSS_radius=.005, SDSS_radius=.0025, CSC_radius=.005,
-            ID=None):
+def waveseeker(RA=192.491112052, DEC=5.311410068, frame='icrs', NVSS_radius=.005, SDSS_radius=.0025, CSC_radius=.005):
     myLocation = SkyCoord(RA*u.deg, DEC*u.deg, frame=frame)
     scs_radio_query = vo.dal.SCSQuery('https://heasarc.gsfc.nasa.gov/cgi-bin/vo/cone/coneGet.pl?table=nvss&',
                                       pos=(myLocation.ra.deg, myLocation.dec.deg),
@@ -16,8 +14,6 @@ def getdata(RA=192.491112052, DEC=5.311410068, frame='icrs',
     scs_radio_results = scs_radio_query.execute()
     scs_radio_results_pd = scs_radio_results.votable.to_table().to_pandas()
     scs_radio_results_pd.columns = scs_radio_results.fieldnames
-    if ID is not None:
-        scs_radio_results_pd['ID'] = ID
 
     scs_optical_query = vo.dal.SCSQuery('http://wfaudata.roe.ac.uk/sdssdr8-dsa/DirectCone?DSACAT=SDSS_DR8&DSATAB=PhotoObjAll&',
                                         pos=(myLocation.ra.deg, myLocation.dec.deg),
@@ -25,8 +21,6 @@ def getdata(RA=192.491112052, DEC=5.311410068, frame='icrs',
     scs_optical_results = scs_optical_query.execute()
     scs_optical_results_pd = scs_optical_results.votable.to_table().to_pandas()
     scs_optical_results_pd.columns = scs_optical_results.fieldnames
-    if ID is not None:
-        scs_optical_results_pd['ID'] = ID
 
     scs_Xray_query = vo.dal.SCSQuery('http://cda.harvard.edu/cscvo/coneSearch?',
                                      pos=(myLocation.ra.deg, myLocation.dec.deg),
@@ -34,16 +28,13 @@ def getdata(RA=192.491112052, DEC=5.311410068, frame='icrs',
     scs_Xray_results = scs_Xray_query.execute()
     scs_Xray_results_pd = scs_Xray_results.votable.to_table().to_pandas()
     scs_Xray_results_pd.columns = scs_Xray_results.fieldnames
-    if ID is not None:
-        scs_Xray_results_pd['ID'] = ID
 
     return {'NVSS' : scs_radio_results_pd,
             'SDSS' : scs_optical_results_pd,
             'CSC' : scs_Xray_results_pd}
 
 
-def plotdata(RA=192.491112052, DEC=5.311410068, framesize=4*u.arcmin, frame='icrs',
-             NVSS_radius=.005, SDSS_radius=.0025, CSC_radius=.005, filename = None):
+def waveplotter(RA=192.491112052, DEC=5.311410068, framesize=4*u.arcmin, frame='icrs', NVSS_radius=.005, SDSS_radius=.0025, CSC_radius=.005, filename = None):
     
     height_ratios = [8]
     width_ratios = [8, 8, 8]
@@ -81,11 +72,11 @@ def plotdata(RA=192.491112052, DEC=5.311410068, framesize=4*u.arcmin, frame='icr
     names = ['NRAO/VLA Sky Survey - 1.4 GHz', 'Sloan Digital Sky Survey', 'Chandra Source Catalog']
     units = ['Janskies', 'Photons ADU$^{-1}$', 'Photons cm$^{-2}$ s$^{-1}$']
 
-    wavedata = getdata(RA=RA, DEC=DEC,
-                       frame=frame,
-                       NVSS_radius=NVSS_radius,
-                       SDSS_radius=SDSS_radius,
-                       CSC_radius=CSC_radius)
+    wavedata = waveseeker(RA=RA, DEC=DEC,
+                          frame=frame,
+                          NVSS_radius=NVSS_radius,
+                          SDSS_radius=SDSS_radius,
+                          CSC_radius=CSC_radius)
     scs_radio_results_pd = wavedata['NVSS']
     scs_optical_results_pd = wavedata['SDSS']
     scs_Xray_results_pd = wavedata['CSC']
