@@ -1,0 +1,27 @@
+<html><head>
+<title>SDSS error message</title>
+</head><body bgcolor=white>
+<h2>SDSS error message</h2><H3 BGCOLOR=pink><font color=red>Incorrect syntax near the keyword &#39;FROM&#39;.
+Arithmetic overflow occurred.
+Arithmetic overflow occurred.</font></H3><h3>Your SQL command was: <br><pre>SELECT TOP 100000
+ p.objid,p.ra,p.dec,p.u,p.g,p.r,p.i,p.z,
+ s.specobjid, s.class, s.z as redshift,
+FROM PhotoObj AS p
+ JOIN SpecObj AS s ON s.bestobjid = p.objid
+WHERE p.clean = 1
+</pre></h3><hr><br><br> <form method ="POST" target="_blank" name="bugreportform" action="http://www.sciserver.org/support/bug-report-and-suggestion-form/"><input type="hidden" name="popz_ErrorCode" id="popz_ErrorCode" value="500" /><input type="hidden" name="popz_ErrorType" id="popz_ErrorType" value="InternalServerError" /><input type="hidden" name="popz_ErrorMessage" id="popz_ErrorMessage" value="Incorrect syntax near the keyword &#39;FROM&#39;.
+Arithmetic overflow occurred.
+Arithmetic overflow occurred." /><input type="hidden" name="popz_LogMessageID" id="popz_LogMessageID" value="4882fda3-ba9a-4d43-971e-c6e90410d267" /><input type="hidden" name="popz_username" id="popz_username" value="" /><input type="hidden" name="popz_userid" id="popz_userid" value="" /><input type="hidden" name="popz_pageurl" id="popz_pageurl" value="http://skyserver.sdss.org:80/dr14/SkyServerWS/SearchTools/SqlSearch?searchtool=SQL&amp;TaskName=Skyserver.Search.SQL&amp;syntax=NoSyntax&amp;ReturnHtml=true&amp;cmd=--%20This%20query%20does%20a%20table%20JOIN%20between%20the%20imaging%20%28PhotoObj%29%20and%20spectra%0D%0A--%20%28SpecObj%29%20tables%20and%20includes%20the%20necessary%20columns%20in%20the%20SELECT%20to%20upload%0D%0A--%20the%20results%20to%20the%20SAS%20%28Science%20Archive%20Server%29%20for%20FITS%20file%20retrieval.%0D%0ASELECT%20TOP%20100000%0D%0A%20%20%20p.objid%2Cp.ra%2Cp.dec%2Cp.u%2Cp.g%2Cp.r%2Cp.i%2Cp.z%2C%0D%0A%20%20%20s.specobjid%2C%20s.class%2C%20s.z%20as%20redshift%2C%0D%0AFROM%20PhotoObj%20AS%20p%0D%0A%20%20%20JOIN%20SpecObj%20AS%20s%20ON%20s.bestobjid%20%3D%20p.objid%0D%0AWHERE%20p.clean%20%3D%201%0D%0A%0D%0A&amp;format=csv&amp;TableName=&amp;EntryPoint=SkyserverWS.SearchTools.SqlSearch" /><input type="hidden" name="popz_referrer" id="popz_referrer" value="http://skyserver.sdss.org/dr14/en/tools/search/sql.aspx" /><input type="hidden" name="popz_StackTrace" id="popz_StackTrace" value="   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean&amp; dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task&amp; task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task&amp; task, Boolean&amp; usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteReader()
+   at Sciserver_webService.DoDatabaseQuery.RunDBquery.RunQuery() in C:\data\mtaghiza\ManuWork\SkyserverWSdr14\Sciserver_webService\Common\RunDBquery.cs:line 385
+   at Sciserver_webService.DoDatabaseQuery.RunDBquery.SendToUser() in C:\data\mtaghiza\ManuWork\SkyserverWSdr14\Sciserver_webService\Common\RunDBquery.cs:line 434
+   at Sciserver_webService.DoDatabaseQuery.RunDBquery.&lt;ExecuteAsync&gt;d__13.MoveNext() in C:\data\mtaghiza\ManuWork\SkyserverWSdr14\Sciserver_webService\Common\RunDBquery.cs:line 72" /><input type="hidden" name="popz_InnerTrace" id="popz_InnerTrace" value="" /><input type="hidden" name="popz_LogTime" id="popz_LogTime" value="2018-06-29T16:23:34.3884139-04:00" /><input type="hidden" name="popz_ClientIP" id="popz_ClientIP" value="130.65.254.12" /><input id="submit" type="submit" value="Click to Report Error"></form><br>Technical info: <br> {&quot;ErrorCode&quot;:500,&quot;ErrorType&quot;:&quot;InternalServerError&quot;,&quot;ErrorMessage&quot;:&quot;Incorrect syntax near the keyword &#39;FROM&#39;.\r\nArithmetic overflow occurred.\r\nArithmetic overflow occurred.&quot;,&quot;LogMessageID&quot;:&quot;4882fda3-ba9a-4d43-971e-c6e90410d267&quot;,&quot;LogTime&quot;:&quot;2018-06-29T16:23:34.3884139-04:00&quot;}</BODY></HTML>
